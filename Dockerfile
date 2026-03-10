@@ -1,15 +1,17 @@
 FROM node:18-alpine
 
-# Install 9router globally
+# Install 9router
 RUN npm install -g 9router
 
-# Port for both API and Dashboard
-EXPOSE 20128
-
-# Persistence: 9router usually stores config in ~/.9router
-# We create it to ensure permissions are correct
+# Ensure the configuration directory exists
 RUN mkdir -p /root/.9router
 
-# Start 9router
-# --host 0.0.0.0 is critical for UI access from the host
-CMD ["9router", "--no-browser", "--host", "0.0.0.0"]
+# Expose UI/API port
+EXPOSE 20128
+
+# CMD Explanation:
+# yes '' -> sends infinite Enter keys
+# | -> pipes those Enters into the 9router process
+# --no-browser -> prevents trying to open a GUI window
+# --host 0.0.0.0 -> allows you to see the UI at http://localhost:20128
+CMD sh -c "yes '' | 9router --no-browser --host 0.0.0.0"
